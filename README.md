@@ -46,6 +46,52 @@ iv → Sets Clock Uncertainty to 10ps.
 
 v, vi → Sets the maximum limit for I/O port delay to 1ps.
 
+
+## counter_test
+
+`timescale 1ns / 1ns
+
+module counter_test;
+
+reg clk,rst,m;
+
+wire [3:0] count;
+
+initial
+
+begin
+
+clk=0;
+
+rst=0;#5;
+
+rst=1;
+
+end
+
+initial
+
+begin
+
+m=1;
+
+#160 m=0;
+
+end
+
+counter counter1 (clk,m,rst, count);
+
+always #5 clk=~clk;
+ 
+initial $monitor("Time=%t rst=%b clk=%b count=%b" , $time,rst,clk,count);
+
+initial
+
+#320 $finish;
+
+endmodule
+
+
 ### Step 3 : Performing Synthesis
 
 The Liberty files are present in the library path,
@@ -63,13 +109,53 @@ used.
 
 • Genus Script file with .tcl file Extension commands are executed one by one to synthesize the netlist.
 
+
+## counter
+
+`timescale 1ns / 1 ns
+
+module counter(clk,m,rst,count);
+
+input clk,m,rst;
+
+output reg [3:0] count;
+
+always@(posedge clk or negedge rst)
+
+begin
+
+if (!rst)
+
+count=0;
+
+else if(m)
+
+count=count+1;
+
+else
+
+count=count-1;
+
+end
+
+endmodule
+
+
 #### Synthesis RTL Schematic :
+![Screenshot (60)](https://github.com/user-attachments/assets/735195f8-1c1f-4911-90c3-2c429b36083d)
+
 
 #### Area report:
+![Screenshot (63)](https://github.com/user-attachments/assets/8d22263e-139f-426d-ace8-0910f11cbcf4)
+
 
 #### Power Report:
+![Screenshot (61)](https://github.com/user-attachments/assets/6efbe9c2-f3bd-4ccb-9a98-100a6309c20e)
+
 
 #### Timing Report: 
+![Screenshot (62)](https://github.com/user-attachments/assets/e01a652d-85f3-4811-931f-113b0a5e754f)
+
 
 #### Result: 
 
